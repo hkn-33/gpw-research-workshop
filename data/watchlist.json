@@ -1,0 +1,49 @@
+{
+  "wig20": [
+    "PKN",
+    "PKO",
+    "PEO",
+    "PZU",
+    "KGH",
+    "ALE",
+    "DNP",
+    "CDR",
+    "LPP",
+    "SPL",
+    "KRU",
+    "KTY",
+    "BDX",
+    "MBK",
+    "ALR",
+    "JSW",
+    "PGE",
+    "OPL",
+    "CPS",
+    "ZAB"
+  ],
+  "mwig40": [
+    "XTB",
+    "TXT",
+    "CIG",
+    "WPL",
+    "ATT",
+    "MIL",
+    "ENA",
+    "ASB",
+    "DVL",
+    "GPW",
+    "DOM",
+    "PCO",
+    "BFT",
+    "11B",
+    "PLW",
+    "TEN"
+  ],
+  "swig80_and_quality": [
+    "SNT",
+    "RBW",
+    "DAT",
+    "PCR",
+    "APR"
+  ]
+}

@@ -1,0 +1,8 @@
+# personal, never published
+portfolio.md
+CLAUDE.local.md
+.claude/
+
+# python
+__pycache__/
+*.pyc
