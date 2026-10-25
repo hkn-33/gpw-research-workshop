@@ -13,6 +13,7 @@ Commands:
 import sys
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 import argparse
+import ast
 import json
 from decimal import Decimal, getcontext
 
@@ -31,12 +32,33 @@ def human(d):
     return f"{v:,.2f}"
 
 
+_BIN_OPS = {
+    ast.Add: lambda a, b: a + b,
+    ast.Sub: lambda a, b: a - b,
+    ast.Mult: lambda a, b: a * b,
+    ast.Div: lambda a, b: a / b,
+}
+
+
+def _eval_node(node):
+    """Evaluate a parsed arithmetic expression in Decimal. Only numbers, + - * / and parentheses."""
+    if isinstance(node, ast.Expression):
+        return _eval_node(node.body)
+    if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)) and not isinstance(node.value, bool):
+        return D(node.value)
+    if isinstance(node, ast.BinOp) and type(node.op) in _BIN_OPS:
+        return _BIN_OPS[type(node.op)](_eval_node(node.left), _eval_node(node.right))
+    if isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.UAdd, ast.USub)):
+        value = _eval_node(node.operand)
+        return -value if isinstance(node.op, ast.USub) else value
+    raise ValueError("only numbers, + - * / and parentheses are allowed")
+
+
 def calc(args):
-    allowed = set("0123456789.+-*/()eE ")
-    if not set(args.expr) <= allowed:
-        sys.exit(f"expression contains unsupported characters: {args.expr}")
-    result = eval(args.expr, {"__builtins__": {}}, {})  # input is whitelisted above
-    exact = D(result)
+    try:
+        exact = _eval_node(ast.parse(args.expr, mode="eval"))
+    except (SyntaxError, ValueError, ZeroDivisionError) as e:
+        sys.exit(f"invalid expression: {args.expr} ({e})")
     print(f"expression: {args.expr}")
     print(f"result:     {human(exact)}")
     print(f"exact:      {exact}")
